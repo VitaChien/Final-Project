@@ -43,10 +43,6 @@ data_len = -1
 s
 csv_to_array(stock)
 
-
-
-print(name)
-print(d)
 array_to_CovMatrix()
 
 print(data_len)
