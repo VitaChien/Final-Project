@@ -25,7 +25,7 @@ def csv_to_array(stock):
 
 	fh1.close()
 
-def array_to_CovMatrix():
+def array_to_CovMatrix_Markowitz():
 
 	global Matrix
 
@@ -40,10 +40,10 @@ stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
 d = dict()
 data_len = -1
-s
+
 csv_to_array(stock)
 
-array_to_CovMatrix()
+array_to_CovMatrix_Markowitz()
 
 print(data_len)
 
