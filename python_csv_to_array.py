@@ -36,6 +36,42 @@ def array_to_CovMatrix_Markowitz():
 
 	print(np.cov(Matrix))
 
+def array_to_CovMatrix_Index():
+
+    beta_list = []    #beta for every stock
+    e = []            #residual for every stock
+
+    Rm = d[name[-1]]  
+
+    A = np.vstack([Rm, np.ones(len(Rm))]).T 
+
+    for i in range(1,len(name)-1):
+        Rt = d[name[i]]
+        beta, alpha = np.linalg.lstsq(A, Rt, rcond = -1)[0]  
+        beta_list.append(beta)
+
+        residual = Rt - (alpha + beta * Rm)
+        e.append(residual)
+
+    beta_list.append(1.0)    
+    e = np.asarray(e)   
+    e_Var = np.var(e)     #residual variance
+
+    Rm = np.asarray(Rm) 
+    Rm_Var = np.var(Rm)   #market return variance
+    
+    Matrix_Index = [[] for x in range(len(name)-1)]
+
+    for i in range(len(name)-1):
+        for j in range(len(name)-1):
+            if i != j:
+                Matrix_Index[i].append(beta_list[i] * beta_list[j] * Rm_Var)
+            else:
+                Matrix_Index[i].append(beta_list[i]**2 * Rm_Var + e_Var)    
+
+    print(Matrix_Index)  	
+
+
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
 d = dict()
@@ -44,6 +80,7 @@ data_len = -1
 csv_to_array(stock)
 
 array_to_CovMatrix_Markowitz()
+array_to_CovMatrix_Index()
 
 print(data_len)
 
