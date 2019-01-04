@@ -60,7 +60,7 @@ def array_to_CovMatrix_Index():
     Rm = np.asarray(Rm) 
     Rm_Var = np.var(Rm)   #market return variance
     
-    Matrix_Index = [[] for x in range(len(name)-1)]
+    Matrix_Index = [[] for x in range(len(name) - 1)]
 
     for i in range(len(name)-1):
         for j in range(len(name)-1):
