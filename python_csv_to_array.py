@@ -250,7 +250,22 @@ def solve_with_shortsale(aims):  #me
         for i in range(6):
             GMVP_return += weight[i]*average_return[i]
   
-    D =         
+    distance = (BMVP_return - GMVP_return)/6
+
+    point1_return = BMVP_return + distance
+    point2_return = BMVP_return + 2*distance
+    point3_return = BMVP_return + 3*distance
+    point4_return = BMVP_return + 4*distance
+    point5_return = BMVP_return + 5*distance
+
+    return_list = [point1_return, point2_return, point3_return, point4_return, point5_return] 
+    sd_list = []
+
+    for i in range(6):
+        required_return = return_list[i]
+        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [con1,constraint2_for_normal])
+        sd = sol.x
+        sd_list.append(sd)
 
 def solve_without_shortsale(aims):
 
