@@ -109,6 +109,39 @@ class Portfolio():
             model = 'Index'
             solve_without_shortsale()
 
+def objective_normal(weight_list):
+
+    Var_list = []
+    if model == 'Markowitz':
+        for i in range(6):
+            Var_list.append(Matrix_Markowitz[i][i])
+
+    if model == 'Index':
+        for i in range(6):
+            Var_list.append(Matrix_Index[i][i])
+
+    w1 = weight_list[0]
+    w2 = weight_list[1]
+    w3 = weight_list[2]
+    w4 = weight_list[3]
+    w5 = weight_list[4]
+    w6 = weight_list[5]
+
+    weight_list = [w1, w2, w3, w4, w5, w6]
+
+    #計算portfolio的expected return 和 standard deviation
+    Var_P = 0
+    for i in range(6):
+        Var_P += Var_list[i] * weight_list[i]**2
+
+        for j in range(6):
+            if model == "Markowitz":
+                Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])   
+            if model == 'Index':
+                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j]) 
+    #目標式
+    return Var_P
+
 def objective_BMVP(weight_list, ):
 
     Var_list = []
@@ -186,6 +219,12 @@ def constraint(weight_list):
         sum_w = sum_w - weight_list[i]
     return sum_w
 
+def constraint2_for_normal(weight_list):
+    global required_return
+
+    for i in range(6):
+        required_return -= weight_list[i]*average_return[i]
+
 def solve_with_shortsale(aims):  #me
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
@@ -216,19 +255,24 @@ def solve_with_shortsale(aims):  #me
 def solve_without_shortsale(aims):
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
-
     b = (0.0, 1.0) #bound
     bs = (b, b, b, b, b, b)
-
     con1 = {"type":"eq","fun":constraint}
+    sol1 = minimize(objective_BMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
+    er1 = 0
+    er2 = 0 
 
-    if aims == 'BMVP':
-        sol = minimize(objective_BMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
+    for i in range(len(sol1.x)):
+        er1 += sol1.x[i] * average_return[i]
 
-    if aims == 'GMVP':
-        sol = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
-    
+    sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
 
+    for i in range(len(sol2.x)):
+        er2 += sol2.x[i] * average_return[i]
+
+    gap = (er2 - er1)/6
+
+    for i in range()
 
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
