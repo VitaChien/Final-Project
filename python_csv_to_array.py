@@ -119,7 +119,7 @@ def solve():
     b = (0.0, 1.0) #bound
     bs = (b, b, b, b, b, b)
 
-    con1 = {"type":"ineq","fun":constraint}
+    con1 = {"type":"eq","fun":constraint}
 
     sol = minimize(objective, w0, method = "SLSQP", bounds = bs, constraints = con1)
 
