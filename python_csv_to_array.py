@@ -252,14 +252,11 @@ def solve_with_shortsale(aims):  #me
   
     distance = (BMVP_return - GMVP_return)/6
 
-    point1_return = BMVP_return + distance
-    point2_return = BMVP_return + 2*distance
-    point3_return = BMVP_return + 3*distance
-    point4_return = BMVP_return + 4*distance
-    point5_return = BMVP_return + 5*distance
+    return_list = []
 
-    return_list = [point1_return, point2_return, point3_return, point4_return, point5_return] 
-    sd_list = []
+    for i in range(6):
+        point_return = BMVP_return + (i+1)*distance
+        return_list.append(point_return)
 
     for i in range(6):
         required_return = return_list[i]
