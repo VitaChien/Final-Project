@@ -28,8 +28,16 @@ class Portfolio():
     def __init__(self, csv):
         self.Mark = Markowiz(csv)
         self.Index = Index(csv)
+        self.AverageReturn = AverageReturn()
         self.solve = Solve()
 
+    def AverageReturn():
+
+        average_return = []
+
+        for i in range(1,len(name)-1):
+            average_return.append(d[name[i]])
+                
     def Markowitz(self):
 
         global Matrix_Markowitz
@@ -46,13 +54,17 @@ class Portfolio():
         beta_list = []    #beta for every stock
         e = []            #residual for every stock
 
+        global average_return #average return for every stock
+        average_return = [] 
+
         Rm = d[name[-1]]  
 
         A = np.vstack([Rm, np.ones(len(Rm))]).T 
 
         for i in range(1,len(name)-1):
             Rt = d[name[i]]
-            beta, alpha = np.linalg.lstsq(A, Rt, rcond = -1)[0]  
+            beta, alpha = np.linalg.lstsq(A, Rt, rcond = -1)[0] 
+            average_return.append(Rt) 
             beta_list.append(beta)
 
             residual = Rt - (alpha + beta * Rm)
@@ -74,7 +86,8 @@ class Portfolio():
                 if i != j:
                     Matrix_Index[i].append(beta_list[i] * beta_list[j] * Rm_Var)
                 else:
-                    Matrix_Index[i].append(beta_list[i]**2 * Rm_Var + e_Var)    
+                    Matrix_Index[i].append(beta_list[i]**2 * Rm_Var + e_Var)   
+                         
 
     def solve(self, method, shortsale):
 
@@ -173,7 +186,7 @@ def constraint(weight_list):
         sum_w = sum_w - weight_list[i]
     return sum_w
 
-def solve_with_shortsale(aims):
+def solve_with_shortsale(aims):  #me
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
 
@@ -181,11 +194,24 @@ def solve_with_shortsale(aims):
 
     if aims == 'BMVP':
         sol = minimize(objective_BMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
+        
+        weight = sol.x.tolist()
+        best = sol.fun
+        
+        for i in range(6):
+            BMVP_return += weight[i]*average_return[i]
+
 
     if aims == 'GMVP':
         sol = minimize(objective_GMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
 
-    print(sol) 
+        weight = sol.x.tolist()
+        best = sol.fun
+        
+        for i in range(6):
+            GMVP_return += weight[i]*average_return[i]
+  
+    D =         
 
 def solve_without_shortsale(aims):
 
@@ -201,6 +227,7 @@ def solve_without_shortsale(aims):
 
     if aims == 'GMVP':
         sol = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
+    
 
 
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
