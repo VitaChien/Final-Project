@@ -1,7 +1,6 @@
-#Project csv 資料處理
-
 import csv
 import numpy as np
+import pulp 
 
 def csv_to_array(stock):
 
@@ -29,7 +28,7 @@ def array_to_CovMatrix_Markowitz():
 
 	global Matrix
 
-	Matrix = [d[name[1]]]
+	Matrix = [d[name[1]]] 
 
 	for i in range(2, len(name)):
 		Matrix = np.vstack((Matrix, d[name[i]]))
@@ -59,6 +58,8 @@ def array_to_CovMatrix_Index():
 
     Rm = np.asarray(Rm) 
     Rm_Var = np.var(Rm)   #market return variance
+
+    global Matrix_Index
     
     Matrix_Index = [[] for x in range(len(name) - 1)]
 
@@ -71,6 +72,58 @@ def array_to_CovMatrix_Index():
 
     print(Matrix_Index)  	
 
+
+def objective(weight_list):
+
+    Var_list = []
+
+    for i in range(6):
+        Var_list.append(Matrix_Index[i][i])
+
+    w1 = weight_list[0]
+    w2 = weight_list[1]
+    w3 = weight_list[2]
+    w4 = weight_list[3]
+    w5 = weight_list[4]
+    w6 = weight_list[5]
+
+    weight_list = [w1, w2, w3, w4, w5, w6]
+
+    #計算portfolio的expected return 和 standard deviation
+    Var_P = 0
+    ER = 0
+    for i in range(6):
+        Var_P += Var_list[i] * weight_list[i]**2
+        ER += weight_list[i] * sum(d[name[i+1]]) / len(d[name[i+1]])
+
+        for j in range(6):
+            Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Index[i][j])    
+
+    SD_P = Var_P ** 0.5
+
+    #目標式
+    return (SD_P / ER)
+
+
+def constraint(weight_list): 
+    sum_w = 1.0
+    for i in range(6):
+        sum_w = sum_w - weight_list[i]
+    return sum_w
+
+
+def solve():
+
+    w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
+
+    b = (0.0, 1.0) #bound
+    bs = (b, b, b, b, b, b)
+
+    con1 = {"type":"ineq","fun":constraint}
+
+    sol = minimize(objective, w0, method = "SLSQP", bounds = bs, constraints = con1)
+
+    print(sol) 
 
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
