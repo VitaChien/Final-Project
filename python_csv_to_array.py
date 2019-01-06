@@ -1,6 +1,5 @@
 import csv
 import numpy as np
-import pulp 
 
 def csv_to_array(stock):
 
@@ -24,20 +23,23 @@ def csv_to_array(stock):
 
     fh1.close()
 
-class Model():
-    def __init__(self, i):
-        self.Model = i
+class Portfolio():
+
+    def __init__(self, csv):
+        self.Mark = Markowiz(csv)
+        self.Index = Index(csv)
+        self.solve = Solve()
 
     def Markowitz(self):
 
-        global Matrix
+        global Matrix_Markowitz
 
         Matrix = [d[name[1]]] 
 
         for i in range(2, len(name)):
             Matrix = np.vstack((Matrix, d[name[i]]))
 
-        return (np.cov(Matrix))
+        Matrix_Markowitz = np.cov(Matrix)
 
     def Index(self):
 
@@ -72,16 +74,38 @@ class Model():
                 if i != j:
                     Matrix_Index[i].append(beta_list[i] * beta_list[j] * Rm_Var)
                 else:
-                    Matrix_Index[i].append(beta_list[i]**2 * Rm_Var + e_Var)   
-           
-        return Matrix_Index     
+                    Matrix_Index[i].append(beta_list[i]**2 * Rm_Var + e_Var)    
 
-def objective(weight_list):
+    def solve(self, method, shortsale):
+
+        global model 
+
+        if method == 'M' and shortsale == True:
+            model = 'Markowitz'
+            solve_with_shortsale()
+
+        if method == 'M' and shortsale == False:
+            model = 'Markowitz'
+            solve_without_shortsale()
+
+        if method == 'I' and shortsle == True:
+            model = 'Index'
+            solve_with_shortsale()
+
+        if method == 'I' and shortsale == False:
+            model = 'Index'
+            solve_without_shortsale()
+
+def objective_BMVP(weight_list, ):
 
     Var_list = []
+    if model == "Markowitz":
+        for i in range(6):
+            Var_list.append(Matrix_Markowitz[i][i])
 
-    for i in range(6):
-        Var_list.append(Matrix_Index[i][i])
+    if model == 'Index':
+        for i in range(6):
+            Var_list.append(Matrix_Index[i][i])
 
     w1 = weight_list[0]
     w2 = weight_list[1]
@@ -100,13 +124,48 @@ def objective(weight_list):
         ER += weight_list[i] * sum(d[name[i+1]]) / len(d[name[i+1]])
 
         for j in range(6):
-            Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Index[i][j])    
+            if model == "Markowitz":
+                Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])   
+            if model == 'Index':
+                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])  
 
     SD_P = Var_P ** 0.5
 
     #目標式
     return (SD_P / ER)
 
+def objective_GMVP(weight_list):
+
+    Var_list = []
+    if model == 'Markowitz':
+        for i in range(6):
+            Var_list.append(Matrix_Markowitz[i][i])
+
+    if model == 'Index':
+        for i in range(6):
+            Var_list.append(Matrix_Index[i][i])
+
+    w1 = weight_list[0]
+    w2 = weight_list[1]
+    w3 = weight_list[2]
+    w4 = weight_list[3]
+    w5 = weight_list[4]
+    w6 = weight_list[5]
+
+    weight_list = [w1, w2, w3, w4, w5, w6]
+
+    #計算portfolio的expected return 和 standard deviation
+    Var_P = 0
+    for i in range(6):
+        Var_P += Var_list[i] * weight_list[i]**2
+
+        for j in range(6):
+            if model == "Markowitz":
+                Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])   
+            if model == 'Index':
+                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j]) 
+    #目標式
+    return Var_P
 
 def constraint(weight_list): 
     sum_w = 1.0
@@ -114,8 +173,21 @@ def constraint(weight_list):
         sum_w = sum_w - weight_list[i]
     return sum_w
 
+def solve_with_shortsale(aims):
 
-def solve():
+    w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
+
+    con1 = {"type":"eq","fun":constraint}
+
+    if aims == 'BMVP':
+        sol = minimize(objective_BMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
+
+    if aims == 'GMVP':
+        sol = minimize(objective_GMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
+
+    print(sol) 
+
+def solve_without_shortsale(aims):
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
 
@@ -124,16 +196,23 @@ def solve():
 
     con1 = {"type":"eq","fun":constraint}
 
-    sol = minimize(objective, w0, method = "SLSQP", bounds = bs, constraints = con1)
+    if aims == 'BMVP':
+        sol = minimize(objective_BMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
 
-    print(sol) 
+    if aims == 'GMVP':
+        sol = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
+
 
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
 d = dict()
 data_len = -1
 
-portfolio = Model(csv_to_array(stock))
+portfolio = Portfolio(csv_to_array(stock))
+
+portfolio.solve(method = 'M', shortsale = True)
+
+
 print(portfolio.Markowitz())
 print(portfolio.Index())
 
