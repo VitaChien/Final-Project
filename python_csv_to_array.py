@@ -275,6 +275,9 @@ def solve_with_shortsale():
     return_list.append(BMVP_return)    
 
     for i in range(6):
+
+        global required_return
+        
         required_return = return_list[i]
 
         sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [con1, con2])
