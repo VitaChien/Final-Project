@@ -267,7 +267,9 @@ def solve_with_shortsale(aims):
         sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [con1,constraint2_for_normal])
         sd = sol.x
         sd_list.append(sd)    
-    sd_list.append(BMVP_sd)    
+    sd_list.append(BMVP_sd) 
+
+    return return_list, sd_list   
 
 def solve_without_shortsale(aims):
 
@@ -309,7 +311,17 @@ def solve_without_shortsale(aims):
         sol = minimize(objective_normal, w0, method = "SLSQP", bounds = bs, constraints = [con1,constraint2_for_normal])
         sd = sol.x
         sd_list.append(sd)    
-    sd_list.append(BMVP_sd)  
+    sd_list.append(BMVP_sd) 
+
+    return return_list, sd_list 
+
+#畫圖
+def draw(return_list, sd_list):
+    x = return_list
+    y = sd_list
+    pyplot.plot(x, y)
+    pyplot.show()
+
 
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
