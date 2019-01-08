@@ -329,6 +329,71 @@ def solve_with_shortsale():
     print(return_list)
     print(sd_list)   
 
+def solve_without_shortsale(): 
+
+    w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
+
+    b = (0.0, 1.0)
+    bs = (b,b,b,b,b)
+
+    global CON
+
+    CON = {"type":"eq","fun":constraint}
+
+    BMVP_return = 0
+    GMVP_return = 0
+
+    sol1 = minimize(objective_BMVP, w0, method = "SLSQP", bounds = bs, constraints = CON)
+        
+    weight = sol1.x.tolist()
+        
+    for i in range(6):
+        BMVP_return += weight[i]*average_return[i]
+
+    BMVP_sd = BMVP_return*sol1.fun #return的是(SD_P / ER)     
+
+
+    sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = CON)
+
+    weight = sol2.x.tolist()
+    GMVP_sd = sol2.fun**0.5  #return的是Var
+        
+    for i in range(6):
+        GMVP_return += weight[i]*average_return[i]
+  
+    distance = (BMVP_return - GMVP_return)/6
+
+    global return_list
+
+    return_list = [GMVP_return]
+    sd_list = [GMVP_sd]
+
+    point_return = GMVP_return
+
+    for i in range(5):
+        point_return += distance
+        return_list.append(point_return)
+    return_list.append(BMVP_return)    
+
+    con1 = {"type":"eq","fun":constraint_for_normal_1}
+    con2 = {"type":"eq","fun":constraint_for_normal_2}
+    con3 = {"type":"eq","fun":constraint_for_normal_3}
+    con4 = {"type":"eq","fun":constraint_for_normal_4}
+    con5 = {"type":"eq","fun":constraint_for_normal_5}
+
+
+    con_list = [con1, con2, con3, con4, con5]
+
+    for i in range(5):
+
+        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [CON, con_list[i]])
+        sd = sol.fun**0.5
+        sd_list.append(sd)    
+    sd_list.append(BMVP_sd) 
+
+    print(return_list)
+    print(sd_list)       
+
 #畫圖
 def draw(return_list, sd_list):
     x = return_list
