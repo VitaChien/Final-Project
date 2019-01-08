@@ -272,24 +272,44 @@ def solve_with_shortsale(aims):
 def solve_without_shortsale(aims):
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
-    b = (0.0, 1.0) #bound
-    bs = (b, b, b, b, b, b)
+
     con1 = {"type":"eq","fun":constraint}
-    sol1 = minimize(objective_BMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
-    er1 = 0
-    er2 = 0 
 
-    for i in range(len(sol1.x)):
-        er1 += sol1.x[i] * average_return[i]
+    if aims == 'BMVP':
+        sol = minimize(objective_BMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
+        
+        weight = sol.x.tolist()
+        
+        for i in range(6):
+            BMVP_return += weight[i]*average_return[i]
 
-    sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
+        BMVP_sd = BMVP_return*sol.fun #return的是(SD_P / ER)     
 
-    for i in range(len(sol2.x)):
-        er2 += sol2.x[i] * average_return[i]
+    if aims == 'GMVP':
+        sol = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
 
-    gap = (er2 - er1)/6
+        weight = sol.x.tolist()
+        GMVP_sd = sol.fun**0.5  #return的是Var
+        
+        for i in range(6):
+            GMVP_return += weight[i]*average_return[i]
+  
+    distance = (BMVP_return - GMVP_return)/6
 
-    for i in range()
+    return_list = [GMVP_return]
+    sd_list = [GMVP_sd]
+
+    for i in range(6):
+        point_return = BMVP_return + (i+1)*distance
+        return_list.append(point_return)
+    return_list.append(BMVP_return)    
+
+    for i in range(6):
+        required_return = return_list[i]
+        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = bs, constraints = [con1,constraint2_for_normal])
+        sd = sol.x
+        sd_list.append(sd)    
+    sd_list.append(BMVP_sd)  
 
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
