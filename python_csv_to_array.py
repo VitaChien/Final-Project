@@ -37,6 +37,7 @@ class Portfolio():
 
     def AverageReturn(self):
 
+        global average_return
         average_return = []
 
         for i in range(1,len(name)-1):
@@ -240,6 +241,9 @@ def solve_with_shortsale():
     sol1 = minimize(objective_BMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
         
     weight = sol1.x.tolist()
+
+    print(weight)
+    print(average_return)
         
     for i in range(6):
         BMVP_return += weight[i]*average_return[i]
