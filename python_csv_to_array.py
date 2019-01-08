@@ -27,11 +27,11 @@ def csv_to_array(stock):
 
 class Portfolio():
 
-    def __init__(self, csv):
-        self.Mark = Markowiz(csv)
-        self.Index = Index(csv)
-        self.AverageReturn = AverageReturn()
-        self.solve = Solve()
+    def __init__(self):
+        self.Mark = self.Markowitz()
+        self.Index = self.Index()
+        self.AverageReturn = self.AverageReturn()
+        self.solve = self.Solve()
 
     def AverageReturn():
 
