@@ -105,7 +105,7 @@ class Portfolio():
             model = 'Markowitz'
             solve_without_shortsale()
 
-        if method == 'I' and shortsle == True:
+        if method == 'I' and shortsale == True:
             model = 'Index'
             solve_with_shortsale()
 
@@ -271,7 +271,7 @@ def solve_with_shortsale():
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
 
-    global CON
+    global CON, answerx, answery
 
     CON = {"type":"eq","fun":constraint}
 
@@ -326,17 +326,18 @@ def solve_with_shortsale():
         sd_list.append(sd)    
     sd_list.append(BMVP_sd) 
 
-    print(return_list)
-    print(sd_list)   
+    answery = return_list
+    answerx = sd_list
+   
 
 def solve_without_shortsale(): 
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
 
     b = (0.0, 1.0)
-    bs = (b,b,b,b,b)
+    bs = (b,b,b,b,b,b)
 
-    global CON
+    global CON, return_list, answerx, answery
 
     CON = {"type":"eq","fun":constraint}
 
@@ -362,8 +363,6 @@ def solve_without_shortsale():
         GMVP_return += weight[i]*average_return[i]
   
     distance = (BMVP_return - GMVP_return)/6
-
-    global return_list
 
     return_list = [GMVP_return]
     sd_list = [GMVP_sd]
@@ -391,14 +390,13 @@ def solve_without_shortsale():
         sd_list.append(sd)    
     sd_list.append(BMVP_sd) 
 
-    print(return_list)
-    print(sd_list)       
+    answery = return_list
+    answerx = sd_list      
 
 #畫圖
-def draw(return_list, sd_list):
-    x = return_list
-    y = sd_list
-    pyplot.plot(x, y)
+def draw():
+
+    pyplot.plot(answerx, answery)
     pyplot.show()
 
 
@@ -406,7 +404,13 @@ stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
 d = dict()
 data_len = -1
+answerx =[]
+answery = []
 
 portfolio = Portfolio(csv_to_array(stock))
 
 portfolio.solve(method = 'M', shortsale = True)
+draw()
+portfolio.solve(method = 'M', shortsale = False)
+portfolio.solve(method = 'I', shortsale = True)
+portfolio.solve(method = 'I', shortsale = False)
