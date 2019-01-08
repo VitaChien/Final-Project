@@ -1,5 +1,7 @@
 import csv
 import numpy as np
+import matplotlib.pyplot as pyplot
+
 
 def csv_to_array(stock):
 
@@ -138,11 +140,11 @@ def objective_normal(weight_list):
             if model == "Markowitz":
                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])   
             if model == 'Index':
-                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j]) 
+                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Index[i][j]) 
     #目標式
     return Var_P
 
-def objective_BMVP(weight_list, ):
+def objective_BMVP(weight_list):
 
     Var_list = []
     if model == "Markowitz":
@@ -173,7 +175,7 @@ def objective_BMVP(weight_list, ):
             if model == "Markowitz":
                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])   
             if model == 'Index':
-                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])  
+                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Index[i][j])  
 
     SD_P = Var_P ** 0.5
 
@@ -209,7 +211,7 @@ def objective_GMVP(weight_list):
             if model == "Markowitz":
                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j])   
             if model == 'Index':
-                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Markowitz[i][j]) 
+                 Var_P += 2 * (weight_list[i] * weight_list[j] * Matrix_Index[i][j]) 
     #目標式
     return Var_P
 
@@ -252,11 +254,12 @@ def solve_with_shortsale(aims):  #me
   
     distance = (BMVP_return - GMVP_return)/6
 
-    return_list = []
+    normal_return_list = []
+    normal_sd_list = []
 
     for i in range(6):
         point_return = BMVP_return + (i+1)*distance
-        return_list.append(point_return)
+        normal_return_list.append(point_return)
 
     for i in range(6):
         required_return = return_list[i]
