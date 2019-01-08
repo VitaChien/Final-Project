@@ -224,12 +224,40 @@ def constraint(weight_list):
         sum_w = sum_w - weight_list[i]
     return sum_w
 
-def constraint2_for_normal(weight_list):
+def constraint_for_normal_1(weight_list):
 
-    global required_return
+    global required_return_1
 
     for i in range(6):
-        required_return -= weight_list[i]*average_return[i]
+        required_return_2 -= weight_list[i]*average_return[i]
+
+def constraint_for_normal_2(weight_list):
+
+    global required_return_2
+
+    for i in range(6):
+        required_return_2 -= weight_list[i]*average_return[i]
+
+def constraint_for_normal_3(weight_list):
+
+    global required_return_3
+
+    for i in range(6):
+        required_return_3 -= weight_list[i]*average_return[i]
+
+def constraint_for_normal_4(weight_list):
+
+    global required_return_4
+
+    for i in range(6):
+        required_return_4 -= weight_list[i]*average_return[i]
+
+def constraint_for_normal_5(weight_list):
+
+    global required_return_5
+
+    for i in range(6):
+        required_return_5 -= weight_list[i]*average_return[i]                        
 
 def solve_with_shortsale(): 
 
@@ -324,8 +352,13 @@ def solve_without_shortsale():
     print(return_list)
 
     for i in range(5):
-        required_return = return_list[i]
-        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = bs, constraints = [con1, constraint2_for_normal])
+        required_return_1 = return_list[1]
+        required_return_2 = return_list[2]
+        required_return_3 = return_list[3]
+        required_return_4 = return_list[4]
+        required_return_5 = return_list[5]
+
+        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = bs, constraints = [con1, con2])
         sd = sol.x
         sd_list.append(sd)    
     sd_list.append(BMVP_sd) 
@@ -340,7 +373,7 @@ def draw(return_list, sd_list):
     pyplot.show()
 
 
-stock = '/Users/xuyuxiang/Desktop/test_data.csv'
+stock = 'test_data.csv'
 mb64 = ""
 d = dict()
 data_len = -1
