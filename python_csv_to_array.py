@@ -229,7 +229,9 @@ def constraint_for_normal_1(weight_list):
     global required_return_1
 
     for i in range(6):
-        required_return_2 -= weight_list[i]*average_return[i]
+        required_return_1 -= weight_list[i]*average_return[i]
+
+    return required_return_1    
 
 def constraint_for_normal_2(weight_list):
 
@@ -238,12 +240,16 @@ def constraint_for_normal_2(weight_list):
     for i in range(6):
         required_return_2 -= weight_list[i]*average_return[i]
 
+    return required_return_2    
+
 def constraint_for_normal_3(weight_list):
 
     global required_return_3
 
     for i in range(6):
         required_return_3 -= weight_list[i]*average_return[i]
+
+    return required_return_3    
 
 def constraint_for_normal_4(weight_list):
 
@@ -252,25 +258,29 @@ def constraint_for_normal_4(weight_list):
     for i in range(6):
         required_return_4 -= weight_list[i]*average_return[i]
 
+    return required_return_4    
+
 def constraint_for_normal_5(weight_list):
 
     global required_return_5
 
     for i in range(6):
-        required_return_5 -= weight_list[i]*average_return[i]                        
+        required_return_5 -= weight_list[i]*average_return[i] 
+
+    return required_return_5                           
 
 def solve_with_shortsale(): 
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
 
-    global con1, con2
+    global CON
 
-    con1 = {"type":"eq","fun":constraint}
+    CON = {"type":"eq","fun":constraint}
 
     BMVP_return = 0
     GMVP_return = 0
 
-    sol1 = minimize(objective_BMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
+    sol1 = minimize(objective_BMVP, w0, method = "SLSQP", bounds = None, constraints = CON)
         
     weight = sol1.x.tolist()
         
@@ -280,7 +290,7 @@ def solve_with_shortsale():
     BMVP_sd = BMVP_return*sol1.fun #return的是(SD_P / ER)     
 
 
-    sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
+    sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = None, constraints = CON)
 
     weight = sol2.x.tolist()
     GMVP_sd = sol2.fun**0.5  #return的是Var
@@ -298,72 +308,35 @@ def solve_with_shortsale():
         return_list.append(point_return)
     return_list.append(BMVP_return)    
 
-    con2 = {"type":"eq","fun":constraint2_for_normal}
-    for i in range(5):
+    con1 = {"type":"eq","fun":constraint_for_normal_1}
+    con2 = {"type":"eq","fun":constraint_for_normal_2}
+    con3 = {"type":"eq","fun":constraint_for_normal_3}
+    con4 = {"type":"eq","fun":constraint_for_normal_3}
+    con5 = {"type":"eq","fun":constraint_for_normal_3}
 
-        global required_return
+
+    con_list = [con1, con2, con3, con4, con5]
+
+
+    for i in range(5):
         
         required_return = return_list[i]
 
-        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [con1, con2])
-        sd = sol.x
-        sd_list.append(sd)    
-    sd_list.append(BMVP_sd) 
-
-    return return_list, sd_list   
-
-def solve_without_shortsale():
-
-    w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
-
-    con1 = {"type":"eq","fun":constraint}
-    BMVP_return = 0
-    GMVP_return = 0
-
-
-    sol1 = minimize(objective_BMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
-        
-    weight = sol1.x.tolist()
-        
-    for i in range(6):
-        BMVP_return += weight[i]*average_return[i]
-
-    BMVP_sd = BMVP_return*sol1.fun #return的是(SD_P / ER)     
-
-
-    sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
-
-    weight = sol2.x.tolist()
-    GMVP_sd = sol2.fun**0.5  #return的是Var
-        
-    for i in range(6):
-        GMVP_return += weight[i]*average_return[i]
-  
-    distance = (BMVP_return - GMVP_return)/6
-
-    return_list = [GMVP_return]
-    sd_list = [GMVP_sd]
-
-    for i in range(5):
-        point_return = BMVP_return + (i+1)*distance
-        return_list.append(point_return)
-    return_list.append(BMVP_return)    
-
-    print(return_list)
-
-    for i in range(5):
         required_return_1 = return_list[1]
         required_return_2 = return_list[2]
         required_return_3 = return_list[3]
         required_return_4 = return_list[4]
         required_return_5 = return_list[5]
 
-        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = bs, constraints = [con1, con2])
+        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [CON, con_list[i]])
         sd = sol.x
         sd_list.append(sd)    
     sd_list.append(BMVP_sd) 
 
-    return return_list, sd_list 
+    print(return_list)
+    print(sd_list)
+
+    return return_list, sd_list   
 
 #畫圖
 def draw(return_list, sd_list):
@@ -385,4 +358,3 @@ portfolio.solve(method = 'M', shortsale = True)
 
 print(portfolio.Markowitz())
 print(portfolio.Index())
-
