@@ -225,38 +225,47 @@ def constraint(weight_list):
 
 def constraint_for_normal_1(weight_list):
 
-    for i in range(6):
-        return_list[1] -= weight_list[i]*average_return[i]
+    return1 = return_list[1]
 
-    return return_list[1] 
+    for i in range(6):
+        return1 -= weight_list[i]*average_return[i]
+
+    return return1
 
 def constraint_for_normal_2(weight_list):
 
-    for i in range(6):
-        return_list[2] -= weight_list[i]*average_return[i]
+    return2 = return_list[2]
 
-    return return_list[2]  
+    for i in range(6):
+        return2 -= weight_list[i]*average_return[i]
+
+    return return2  
 
 def constraint_for_normal_3(weight_list):
 
-    for i in range(6):
-        return_list[3] -= weight_list[i]*average_return[i]
+    return3 = return_list[3]
 
-    return return_list[3]  
+    for i in range(6):
+        return3 -= weight_list[i]*average_return[i]
+
+    return return3 
 
 def constraint_for_normal_4(weight_list):
 
+    return4 = return_list[4]
     for i in range(6):
-        return_list[4] -= weight_list[i]*average_return[i]
+        return4 -= weight_list[i]*average_return[i]
 
-    return  return_list[4]
+    return  return4
 
 def constraint_for_normal_5(weight_list):
 
-    for i in range(6):
-        return_list[4] -= weight_list[i]*average_return[i] 
+    return5 = return_list[5]
 
-    return return_list[5]                         
+    for i in range(6):
+        return5 -= weight_list[i]*average_return[i] 
+
+    return return5                        
 
 def solve_with_shortsale(): 
 
@@ -294,8 +303,10 @@ def solve_with_shortsale():
     return_list = [GMVP_return]
     sd_list = [GMVP_sd]
 
+    point_return = GMVP_return
+
     for i in range(5):
-        point_return = BMVP_return + (i+1)*distance
+        point_return += distance
         return_list.append(point_return)
     return_list.append(BMVP_return)    
 
@@ -326,7 +337,7 @@ def draw(return_list, sd_list):
     pyplot.show()
 
 
-stock = 'test_data.csv'
+stock = '/Users/xuyuxiang/Desktop/test_data.csv'
 mb64 = ""
 d = dict()
 data_len = -1
