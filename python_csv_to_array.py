@@ -225,7 +225,8 @@ def constraint(weight_list):
     return sum_w
 
 def constraint2_for_normal(weight_list):
-    global required_return
+
+
 
     for i in range(6):
         required_return -= weight_list[i]*average_return[i]
@@ -234,7 +235,11 @@ def solve_with_shortsale():
 
     w0 = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0]
 
+    global con1, con2
+
     con1 = {"type":"eq","fun":constraint}
+    con2 = {"type":"eq","fun":constraint2_for_normal}
+
     BMVP_return = 0
     GMVP_return = 0
 
@@ -248,7 +253,7 @@ def solve_with_shortsale():
     for i in range(6):
         BMVP_return += weight[i]*average_return[i]
 
-    BMVP_sd = BMVP_return*sol.fun #return的是(SD_P / ER)     
+    BMVP_sd = BMVP_return*sol1.fun #return的是(SD_P / ER)     
 
 
     sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = None, constraints = con1)
@@ -271,7 +276,8 @@ def solve_with_shortsale():
 
     for i in range(6):
         required_return = return_list[i]
-        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [con1,constraint2_for_normal])
+
+        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [con1, con2])
         sd = sol.x
         sd_list.append(sd)    
     sd_list.append(BMVP_sd) 
@@ -294,7 +300,7 @@ def solve_without_shortsale():
     for i in range(6):
         BMVP_return += weight[i]*average_return[i]
 
-    BMVP_sd = BMVP_return*sol.fun #return的是(SD_P / ER)     
+    BMVP_sd = BMVP_return*sol1.fun #return的是(SD_P / ER)     
 
 
     sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = con1)
@@ -317,7 +323,7 @@ def solve_without_shortsale():
 
     for i in range(6):
         required_return = return_list[i]
-        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = bs, constraints = [con1,constraint2_for_normal])
+        sol = minimize(objective_normal, w0, method = "SLSQP", bounds = bs, constraints = [con1, constraint2_for_normal])
         sd = sol.x
         sd_list.append(sd)    
     sd_list.append(BMVP_sd) 
