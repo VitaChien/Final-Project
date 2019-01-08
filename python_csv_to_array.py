@@ -41,7 +41,7 @@ class Portfolio():
         average_return = []
 
         for i in range(1,len(name)-1):
-            average_return.append(d[name[i]])
+            average_return.append(np.sum(d[name[i]])/60)
                 
     def Markowitz(self):
 
