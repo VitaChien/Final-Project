@@ -91,8 +91,7 @@ class Portfolio():
                 if i != j:
                     Matrix_Index[i].append(beta_list[i] * beta_list[j] * Rm_Var)
                 else:
-                    Matrix_Index[i].append(beta_list[i]**2 * Rm_Var + e_Var)   
-                         
+                    Matrix_Index[i].append(beta_list[i]**2 * Rm_Var + e_Var)                           
 
     def solve(self, method, shortsale):
 
@@ -312,13 +311,12 @@ def solve_with_shortsale():
     for i in range(5):
 
         sol = minimize(objective_normal, w0, method = "SLSQP", bounds = None, constraints = [CON, con_list[i]])
-        sd = sol.x
+        sd = sol.fun**0.5
         sd_list.append(sd)    
     sd_list.append(BMVP_sd) 
 
-    return return_list, sd_list   
-
-
+    print(return_list)
+    print(sd_list)   
 
 #畫圖
 def draw(return_list, sd_list):
@@ -336,8 +334,3 @@ data_len = -1
 portfolio = Portfolio(csv_to_array(stock))
 
 portfolio.solve(method = 'M', shortsale = True)
-
-
-print(portfolio.Markowitz())
-print(portfolio.Index())
-
