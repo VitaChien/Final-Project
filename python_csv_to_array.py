@@ -397,7 +397,7 @@ def solve_without_shortsale():
 def draw():
 
     pyplot.plot(answerx, answery)
-    pyplot.show()
+    pyplot.savefig('/Users/xuyuxiang/Desktop/image/the_figure.png')
 
 
 stock = '/Users/xuyuxiang/Desktop/test_data.csv'
