@@ -212,30 +212,30 @@ class mainpage(tk.Frame):
     self.imageSqrt3 = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-09 下午12.52.11.png")
     self.btn4 = tk.Label(self, image = self.imageSqrt3)
     self.btn5 = tk.Label(self, text = name2[1], height = 1, width = 8, font = f2)
-    self.btn6 = tk.Label(self, text = string(weight[0]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn6 = tk.Label(self, text = str(weight[0]*100)+"%", height = 1, width = 8, font = f2)
     self.blank2 = tk.Label(self, height = 1, width = 2)
     self.btn7 = tk.Label(self, text = name2[2], height = 1, width = 8, font = f2)
-    self.btn8 = tk.Label(self, text = string(weight[1]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn8 = tk.Label(self, text = str(weight[1]*100)+"%", height = 1, width = 8, font = f2)
     self.btn9 = tk.Label(self, text = name2[3], height = 1, width = 8, font = f2)
-    self.btn10 = tk.Label(self, text = string(weight[2]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn10 = tk.Label(self, text = str(weight[2]*100)+"%", height = 1, width = 8, font = f2)
     self.blank3 = tk.Label(self, height = 1, width = 2)
     self.btn11 = tk.Label(self, text = name2[4], height = 1, width = 8, font = f2)
-    self.btn12 = tk.Label(self, text = string(weight[3]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn12 = tk.Label(self, text = str(weight[3]*100)+"%", height = 1, width = 8, font = f2)
     self.btn13 = tk.Label(self, text = name2[5], height = 1, width = 8, font = f2)
-    self.btn14 = tk.Label(self, text = string(weight[4]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn14 = tk.Label(self, text = str(weight[4]*100)+"%", height = 1, width = 8, font = f2)
     self.blank4 = tk.Label(self, height = 1, width = 2)
     self.btn15 = tk.Label(self, text = name2[6], height = 1, width = 8, font = f2)
-    self.btn16 = tk.Label(self, text = string(weight[5]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn16 = tk.Label(self, text = str(weight[5]*100)+"%", height = 1, width = 8, font = f2)
     self.btn17 = tk.Label(self, text = name2[7], height = 1, width = 8, font = f2)
-    self.btn18 = tk.Label(self, text = string(weight[6]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn18 = tk.Label(self, text = str(weight[6]*100)+"%", height = 1, width = 8, font = f2)
     self.blank5 = tk.Label(self, height = 1, width = 2)
     self.btn19 = tk.Label(self, text = name2[8], height = 1, width = 8, font = f2)
-    self.btn20 = tk.Label(self, text = string(weight[7]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn20 = tk.Label(self, text = str(weight[7]*100)+"%", height = 1, width = 8, font = f2)
     self.btn21 = tk.Label(self, text = name2[9], height = 1, width = 8, font = f2)
-    self.btn22 = tk.Label(self, text = string(weight[8]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn22 = tk.Label(self, text = str(weight[8]*100)+"%", height = 1, width = 8, font = f2)
     self.blank6 = tk.Label(self, height = 1, width = 2)
     self.btn23 = tk.Label(self, text = name2[10], height = 1, width = 8, font = f2)
-    self.btn24 = tk.Label(self, text = string(weight[9]*100)+"%", height = 1, width = 8, font = f2)
+    self.btn24 = tk.Label(self, text = str(weight[9]*100)+"%", height = 1, width = 8, font = f2)
    
 
     self.pic.grid(row = 0, column = 0, columnspan = 5, pady=20)
@@ -554,7 +554,7 @@ def solve_with_shortsale():
 
     w0 = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 
-    global CON, answerx, answery
+    global CON, answerx, answery, weight
 
     CON = {"type":"eq","fun":constraint}
 
@@ -573,7 +573,6 @@ def solve_with_shortsale():
 
     sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = None, constraints = CON)
 
-    global weight
 
     weight = sol2.x.tolist()
     GMVP_sd = sol2.fun**0.5  #return的是Var
@@ -622,7 +621,7 @@ def solve_without_shortsale():
     b = (0.0, 1.0)
     bs = (b,b,b,b,b,b,b,b,b,b)
 
-    global CON, return_list, answerx, answery
+    global CON, return_list, answerx, answery, weight
 
     CON = {"type":"eq","fun":constraint}
 
@@ -640,8 +639,6 @@ def solve_without_shortsale():
 
 
     sol2 = minimize(objective_GMVP, w0, method = "SLSQP", bounds = bs, constraints = CON)
-
-    global weight
 
     weight = sol2.x.tolist()
     GMVP_sd = sol2.fun**0.5  #return的是Var
