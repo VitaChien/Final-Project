@@ -5,6 +5,9 @@ import tkinter as tk
 import tkinter.font as tkFont
 import math
 from PIL import ImageTk
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
 
 
 master = tk.Tk()
@@ -674,7 +677,10 @@ def solve_without_shortsale():
     answerx = sd_list      
 
 #畫圖
+def draw():
 
+    plt.plot(anserx, answery)
+    plt.savefig("/Users/xuyuxiang/Desktop/image/the_figure.png")
 
 stock = '/Users/xuyuxiang/Desktop/raw_data.csv'
 mb64 = ""
