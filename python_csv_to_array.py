@@ -694,10 +694,6 @@ portfolio = Portfolio(csv_to_array(stock))
 
 portfolio.solve(method = 'M', shortsale = True)
 
-print(name)
-print(name[1])
-print(name2)
-
 root = mainpage()
 root.mainloop() 
 root.master.title("Investment Model") 
