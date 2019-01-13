@@ -35,6 +35,7 @@ class mainpage(tk.Frame):
   def secpage(self):  #要變第二頁
     #這是新的
     csv_string = tk.StringVar()
+    global portfolio 
 
     self.btn1.destroy()
     self.btn2.destroy()
@@ -47,7 +48,7 @@ class mainpage(tk.Frame):
     self.entry1 = tk.Entry(self, textvariable = csv_string, width = 50)
 
     self.imageSqrt2 = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-08 下午11.52.02.png")
-    self.btn2 = tk.Button(self, image = self.imageSqrt2, command = lambda:[self.thirdpage, print(csv_string.get())])
+    self.btn2 = tk.Button(self, image = self.imageSqrt2, command = lambda:[self.thirdpage(), portfolio = Portfolio(csv_to_array(csv_string))])
     self.btn1.pack(side = "top", pady=30)
     self.entry1.pack(side = "top", pady=30)
     self.btn2.pack(side = "bottom", pady=70)  
@@ -693,8 +694,6 @@ d = dict()
 data_len = -1
 answerx =[]
 answery = []
-
-portfolio = Portfolio(csv_to_array(stock))
 
 portfolio.solve(method = 'M', shortsale = True)
 
