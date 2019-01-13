@@ -20,7 +20,7 @@ class mainpage(tk.Frame):
     self.pack()
     self.createWidgets()
 
-  def createWidgets(self):
+  def createWidgets(self):    
 
     f2 = tkFont.Font(size = 32, family = "Courier New")
 
@@ -32,21 +32,41 @@ class mainpage(tk.Frame):
     self.btn1.grid(row = 0, column = 0, pady = 30)
     self.btn2.grid(row = 1, column = 0, pady = 30)
 
-  def secpage(self):
+  def secpage(self):  #要變第二頁
+    #這是新的
     self.btn1.destroy()
+    self.btn2.destroy()
+
+    f1 = tkFont.Font(size = 48, family = "Courier New")
+    f2 = tkFont.Font(size = 32, family = "Courier New")
+    
+    self.imageSqrt = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-08 下午11.54.32.png")
+    self.btn1 = tk.Label(self, image = self.imageSqrt)
+    self.entry1 = tk.Entry(self, width = 50)
+
+    self.imageSqrt2 = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-08 下午11.52.02.png")
+    self.btn2 = tk.Button(self, image = self.imageSqrt2, command = self.thirdpage)
+    self.btn1.pack(side = "top", pady=30)
+    self.entry1.pack(side = "top", pady=30)
+    self.btn2.pack(side = "bottom", pady=70)  
+
+  def thirdpage(self):  #要變第三頁
+
+    self.btn1.destroy()
+    self.entry1.destroy()
     self.btn2.destroy()
 
     f2 = tkFont.Font(size = 32, family = "Courier New")
     self.imageSqrt = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/images.png")
     self.btn1 = tk.Label(self, image = self.imageSqrt)
     self.imageSqrt1 = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-06 下午4.35.51.png")
-    self.check1 = tk.Button(self, image = self.imageSqrt1, width = 340, command = self.thirdpage)
+    self.check1 = tk.Button(self, image = self.imageSqrt1, width = 340, command = self.fourpage)
     self.explain1 = tk.Label(self, text = "用自己的歷史作預測", height = 1, width = 20, font = f2)
     self.imageSqrt2= ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-06 下午4.36.13.png")
-    self.check2 = tk.Button(self, image = self.imageSqrt2, width = 340, command = self.thirdpage)
+    self.check2 = tk.Button(self, image = self.imageSqrt2, width = 340, command = self.fourpage)
     self.explain2 = tk.Label(self, text = "用大盤的歷史作預測", height = 1, width = 20, font = f2)
     self.imageSqrt3 = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-06 下午4.35.33.png")
-    self.check3 = tk.Button(self, image = self.imageSqrt3, width = 340, command = self.thirdpage)
+    self.check3 = tk.Button(self, image = self.imageSqrt3, width = 340, command = self.fourpage)
     self.explain3 = tk.Label(self, text = "還要我解釋ㄇ", height = 1, width = 20, font = f2)
 
     self.btn1.grid(row = 0, column = 0, columnspan = 2, pady = 50)
@@ -57,8 +77,8 @@ class mainpage(tk.Frame):
     self.check3.grid(row = 3, column = 0, pady = 10)
     self.explain3.grid(row = 3, column = 1, pady = 10)
 
-
-  def thirdpage(self):
+  def fourpage(self):
+    global name
 
     self.btn1.destroy()
     self.check1.destroy()
@@ -68,24 +88,6 @@ class mainpage(tk.Frame):
     self.explain2.destroy()
     self.explain3.destroy()
 
-    f1 = tkFont.Font(size = 48, family = "Courier New")
-    f2 = tkFont.Font(size = 32, family = "Courier New")
-    
-    self.imageSqrt = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-08 下午11.54.32.png")
-    self.btn1 = tk.Label(self, image = self.imageSqrt)
-    self.entry1 = tk.Entry(self, width = 50)
-
-    self.imageSqrt2 = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-08 下午11.52.02.png")
-    self.btn2 = tk.Button(self, image = self.imageSqrt2, command = self.fourpage)
-    self.btn1.pack(side = "top", pady=30)
-    self.entry1.pack(side = "top", pady=30)
-    self.btn2.pack(side = "bottom", pady=70)
-
-  def fourpage(self):
-    global name
-    self.btn1.destroy()
-    self.entry1.destroy()
-    self.btn2.destroy()
     f1 = tkFont.Font(size = 28, family = "Courier New")
     f2 = tkFont.Font(size = 32, family = "Courier New")
     
