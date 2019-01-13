@@ -47,7 +47,7 @@ class mainpage(tk.Frame):
     self.btn1 = tk.Label(self, image = self.imageSqrt)
     self.entry1 = tk.Entry(self, textvariable = csv_string, width = 50)
     self.imageSqrt2 = ImageTk.PhotoImage(file = "/Users/xuyuxiang/Desktop/image/螢幕快照 2019-01-08 下午11.52.02.png")
-    self.btn2 = tk.Button(self, image = self.imageSqrt2, command = lambda:[self.thirdpage(), portfolio = Portfolio(csv_to_array(csv_string))])
+    self.btn2 = tk.Button(self, image = self.imageSqrt2, command = lambda:[self.thirdpage(), create_portfolio(csv_string.get())])
 
     self.btn1.pack(side = "top", pady=30)
     self.entry1.pack(side = "top", pady=30)
@@ -55,9 +55,12 @@ class mainpage(tk.Frame):
 
   def thirdpage(self):  #要變第三頁
 
+
     self.btn1.destroy()
     self.entry1.destroy()
     self.btn2.destroy()
+
+    global portfolio
 
     f2 = tkFont.Font(size =20, family = "Courier New")
 
@@ -175,7 +178,7 @@ class mainpage(tk.Frame):
     self.btn34.grid(row = 11, column = 1, pady=1)
   
   def fivepage(self) :
-    global name2
+    global name2, weight
     self.btn1.destroy()
     self.btn4.destroy()
     self.btn7.destroy()
@@ -689,11 +692,15 @@ def solve_without_shortsale():
     sd_list.append(BMVP_sd) 
 
     answery = return_list
-    answerx = sd_list      
+    answerx = sd_list    
+
+def create_portfolio(string):
+    global portfolio
+    portfolio = Portfolio(csv_to_array(string))
 
 #畫圖
-def draw():
 
+def draw():
     plt.plot(anserx, answery)
     plt.savefig("/Users/xuyuxiang/Desktop/image/the_figure.png")
     
